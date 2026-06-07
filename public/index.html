@@ -34,18 +34,9 @@
     .gc-btn{width:100%;padding:16px;background:#c9a84c;border:none;border-radius:50px;color:#fff;font-family:'Dela Gothic One',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 0 #a07c28}
     .gc-btn:hover{background:#e0be6a}
     .gc-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #a07c28}
-    /* アニメーション */
     .gc-anim{display:none;text-align:center;padding:20px 20px 30px}
     .gc-anim-wrap{position:relative;width:140px;height:200px;margin:0 auto}
-    .gc-ball-drop{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      width:28px;height:28px;
-      border-radius:50%;
-      top:108px;
-      opacity:0;
-    }
+    .gc-ball-drop{position:absolute;left:50%;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;top:108px;opacity:0}
     .gc-ball-drop.go{animation:ballDrop 1.4s cubic-bezier(.25,.46,.45,.94) forwards}
     @keyframes ballDrop{
       0%{top:108px;opacity:0;transform:translateX(-50%) scale(0.5)}
@@ -56,14 +47,16 @@
       100%{top:155px;opacity:1;transform:translateX(-50%) scale(1)}
     }
     .gc-anim-text{font-size:13px;color:#c9a84c;letter-spacing:2px;margin-top:8px}
-    /* 結果 */
     .gc-result{display:none;padding:0 20px}
     .gc-destiny-label{text-align:center;font-size:11px;color:#c9a84c;letter-spacing:3px;margin:16px 0 10px;font-weight:700}
-    .gc-result-card{background:#faf7f2;border:1.5px solid #c9a84c;border-radius:16px;padding:20px;margin-bottom:16px}
-    .gc-result-name{font-family:'Dela Gothic One',sans-serif;font-size:20px;color:#2a2a2a;text-align:center;margin-bottom:16px;letter-spacing:1px}
-    .gc-result-row{font-size:12px;color:#888;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start}
-    .gc-result-row span{color:#2a2a2a}
-    .gc-reason{margin-top:14px;padding-top:12px;border-top:1px dashed #c9a84c44;font-size:12px;color:#888;line-height:1.7}
+    .gc-result-card{background:#faf7f2;border:1.5px solid #c9a84c;border-radius:16px;overflow:hidden;margin-bottom:16px}
+    .gc-result-photo{width:100%;height:160px;object-fit:cover;display:block}
+    .gc-result-photo-none{width:100%;height:80px;background:#f0e6d3;display:flex;align-items:center;justify-content:center;font-size:28px}
+    .gc-result-body{padding:16px}
+    .gc-result-name{font-family:'Dela Gothic One',sans-serif;font-size:18px;color:#2a2a2a;text-align:center;margin-bottom:12px;letter-spacing:1px}
+    .gc-result-row{font-size:12px;color:#888;margin-bottom:8px;display:flex;gap:6px;align-items:center;overflow:hidden}
+    .gc-result-row span{color:#2a2a2a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+    .gc-reason{margin-top:12px;padding-top:12px;border-top:1px dashed #c9a84c44;font-size:12px;color:#888;line-height:1.7}
     .gc-reason span{color:#2a2a2a}
     .gc-go-btn{width:100%;padding:14px;background:#c9a84c;border:none;border-radius:50px;color:#fff;font-family:'Dela Gothic One',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;margin-bottom:12px;box-shadow:0 4px 0 #a07c28}
     .gc-redraw-btn{width:100%;padding:10px;background:transparent;border:1.5px solid #c9a84c55;border-radius:50px;color:#c9a84c;font-family:'Noto Sans JP',sans-serif;font-size:12px;cursor:pointer;margin-bottom:8px}
@@ -77,7 +70,6 @@
       <p class="gc-title">ガチャンコ</p>
     </div>
 
-    <!-- トップ・結果画面のガチャ静止画像 -->
     <div class="gc-globe-area" id="globe-static">
       <svg width="140" height="160" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="30" y="112" width="80" height="44" rx="8" fill="#e8624a"/>
@@ -146,7 +138,6 @@
       <button class="gc-btn" onclick="drawGacha(false)">お店を探す</button>
     </div>
 
-    <!-- アニメーション（ガチャ1つ＋玉が落ちる） -->
     <div class="gc-anim" id="anim-area">
       <div class="gc-anim-wrap">
         <svg width="140" height="160" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -172,11 +163,14 @@
     <div class="gc-result" id="result-area">
       <p class="gc-destiny-label">— YOUR DESTINY —</p>
       <div class="gc-result-card">
-        <p class="gc-result-name" id="r-name"></p>
-        <div class="gc-result-row">📍 住所：<span id="r-address"></span></div>
-        <div class="gc-result-row">🏷️ ジャンル：<span id="r-genre"></span></div>
-        <div class="gc-result-row">👥 人数：<span id="r-people"></span></div>
-        <div class="gc-reason">💡 運命の理由<br><span id="r-reason"></span></div>
+        <div id="r-photo-area"></div>
+        <div class="gc-result-body">
+          <p class="gc-result-name" id="r-name"></p>
+          <div class="gc-result-row">📍<span id="r-address"></span></div>
+          <div class="gc-result-row">🏷️<span id="r-genre"></span></div>
+          <div class="gc-result-row">👥<span id="r-people"></span></div>
+          <div class="gc-reason">💡 運命の理由<br><span id="r-reason"></span></div>
+        </div>
       </div>
       <button class="gc-go-btn" id="go-btn">マップを開く</button>
       <button class="gc-redraw-btn" id="redraw-btn" onclick="drawGacha(true)">引き直す</button>
@@ -233,6 +227,12 @@
             const m=counts.male,f=counts.female;
             document.getElementById('r-people').textContent='男性'+m+'人・女性'+f+'人（計'+(m+f)+'人）';
             document.getElementById('r-reason').textContent=data.reason;
+            const photoArea=document.getElementById('r-photo-area');
+            if(data.photoUrl){
+              photoArea.innerHTML='<img class="gc-result-photo" src="'+data.photoUrl+'" alt="店舗写真" onerror="this.parentNode.innerHTML=\'<div class=gc-result-photo-none>🍽️</div>\'">';
+            }else{
+              photoArea.innerHTML='<div class="gc-result-photo-none">🍽️</div>';
+            }
             document.getElementById('go-btn').onclick=function(){window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(data.name),'_blank')};
             document.getElementById('globe-static').style.display='flex';
             document.getElementById('result-area').style.display='block';
