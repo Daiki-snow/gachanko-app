@@ -10,7 +10,6 @@
     .gc-machine{max-width:360px;margin:0 auto;background:#fff;border-radius:24px;border:3px solid #c9a84c;padding:0 0 24px;box-shadow:0 4px 0 #c9a84c,0 8px 24px #c9a84c33}
     .gc-header{background:#c9a84c;border-radius:20px 20px 0 0;padding:16px 20px 12px;text-align:center}
     .gc-title{font-family:'Dela Gothic One',sans-serif;font-size:28px;color:#fff;letter-spacing:4px;margin:0}
-    .gc-subtitle{font-size:10px;color:#ffffff99;letter-spacing:2px;margin-top:2px}
     .gc-globe-area{display:flex;justify-content:center;padding:20px 0 8px}
     .gc-body{padding:0 20px}
     .gc-section{margin-bottom:16px}
@@ -35,12 +34,17 @@
     .gc-btn{width:100%;padding:16px;background:#c9a84c;border:none;border-radius:50px;color:#fff;font-family:'Dela Gothic One',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 0 #a07c28}
     .gc-btn:hover{background:#e0be6a}
     .gc-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #a07c28}
-    .gc-btn-note{display:block;font-family:'Noto Sans JP',sans-serif;font-size:10px;font-weight:400;letter-spacing:0;margin-top:3px;opacity:.8}
-    .gc-coin{text-align:center;font-size:11px;color:#c9a84c88;letter-spacing:2px;margin-top:16px}
-    .gc-anim{display:none;text-align:center;padding:30px 20px}
-    .gc-spin{animation:spinY .5s linear infinite;display:inline-block;transform-origin:center}
-    @keyframes spinY{0%{transform:scaleX(1)}25%{transform:scaleX(.1)}50%{transform:scaleX(1)}75%{transform:scaleX(.1)}100%{transform:scaleX(1)}}
-    .gc-anim-text{font-size:13px;color:#c9a84c;letter-spacing:2px;margin-top:16px}
+    .gc-anim{display:none;text-align:center;padding:20px 20px 30px}
+    .gc-anim-machine{position:relative;width:140px;height:160px;margin:0 auto}
+    .gc-ball-drop{position:absolute;left:50%;transform:translateX(-50%);top:60px;width:28px;height:28px;border-radius:50%;opacity:0}
+    .gc-ball-drop.go{animation:ballDrop 1.2s ease-in forwards}
+    @keyframes ballDrop{
+      0%{top:50px;opacity:1;transform:translateX(-50%) scale(1)}
+      60%{top:115px;opacity:1;transform:translateX(-50%) scale(0.9)}
+      75%{top:105px;opacity:1;transform:translateX(-50%) scale(1.1)}
+      100%{top:118px;opacity:1;transform:translateX(-50%) scale(0.85)}
+    }
+    .gc-anim-text{font-size:13px;color:#c9a84c;letter-spacing:2px;margin-top:12px}
     .gc-result{display:none;padding:0 20px}
     .gc-destiny-label{text-align:center;font-size:11px;color:#c9a84c;letter-spacing:3px;margin:16px 0 10px;font-weight:700}
     .gc-result-card{background:#faf7f2;border:1.5px solid #c9a84c;border-radius:16px;padding:20px;margin-bottom:16px}
@@ -50,7 +54,8 @@
     .gc-reason{margin-top:14px;padding-top:12px;border-top:1px dashed #c9a84c44;font-size:12px;color:#888;line-height:1.7}
     .gc-reason span{color:#2a2a2a}
     .gc-go-btn{width:100%;padding:14px;background:#c9a84c;border:none;border-radius:50px;color:#fff;font-family:'Dela Gothic One',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;margin-bottom:12px;box-shadow:0 4px 0 #a07c28}
-    .gc-redraw-btn{width:100%;padding:10px;background:transparent;border:1.5px solid #c9a84c55;border-radius:50px;color:#c9a84c;font-family:'Noto Sans JP',sans-serif;font-size:12px;cursor:pointer}
+    .gc-redraw-btn{width:100%;padding:10px;background:transparent;border:1.5px solid #c9a84c55;border-radius:50px;color:#c9a84c;font-family:'Noto Sans JP',sans-serif;font-size:12px;cursor:pointer;margin-bottom:8px}
+    .gc-reset-btn{width:100%;padding:10px;background:transparent;border:1.5px solid #c9a84c55;border-radius:50px;color:#c9a84c;font-family:'Noto Sans JP',sans-serif;font-size:12px;cursor:pointer}
   </style>
 </head>
 <body>
@@ -58,7 +63,6 @@
   <div class="gc-machine">
     <div class="gc-header">
       <p class="gc-title">ガチャンコ</p>
-      <p class="gc-subtitle">ALGORITHM REJECTED · DESTINY ROULETTE</p>
     </div>
     <div class="gc-globe-area">
       <svg width="140" height="160" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,15 +128,12 @@
         <input class="gc-input" type="text" id="freeword" placeholder="例：静か、おしゃれ、和食...">
       </div>
       <hr class="gc-divider">
-      <button class="gc-btn" onclick="drawGacha(false)">
-        お店を探す
-        <span class="gc-btn-note">（後戻りできません）</span>
-      </button>
-      <p class="gc-coin">— INSERT COIN —</p>
+      <button class="gc-btn" onclick="drawGacha(false)">お店を探す</button>
     </div>
+
     <div class="gc-anim" id="anim-area">
-      <div class="gc-spin">
-        <svg width="80" height="90" viewBox="0 0 140 160">
+      <div class="gc-anim-machine">
+        <svg width="140" height="160" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="30" y="112" width="80" height="44" rx="8" fill="#e8624a"/>
           <rect x="24" y="108" width="92" height="12" rx="6" fill="#e8624a"/>
           <rect x="46" y="128" width="48" height="20" rx="10" fill="#c94a34"/>
@@ -145,9 +146,11 @@
           <ellipse cx="52" cy="30" rx="10" ry="6" fill="white" opacity="0.6"/>
           <rect x="54" y="110" width="32" height="6" rx="3" fill="#c9a84c"/>
         </svg>
+        <div class="gc-ball-drop" id="ball-drop"></div>
       </div>
-      <p class="gc-anim-text" id="anim-text">ｶﾞﾗｶﾞﾗｶﾞﾗ... 運命を紡いでいます...</p>
+      <p class="gc-anim-text" id="anim-text">ｶﾞﾗｶﾞﾗｶﾞﾗ... お店を選定しています...</p>
     </div>
+
     <div class="gc-result" id="result-area">
       <p class="gc-destiny-label">— YOUR DESTINY —</p>
       <div class="gc-result-card">
@@ -157,31 +160,75 @@
         <div class="gc-result-row">👥 人数：<span id="r-people"></span></div>
         <div class="gc-reason">💡 運命の理由<br><span id="r-reason"></span></div>
       </div>
-      <button class="gc-go-btn">今すぐ行け</button>
-      <button class="gc-redraw-btn" id="redraw-btn" onclick="drawGacha(true)">引き直す（Coward?）</button>
+      <button class="gc-go-btn" id="go-btn">マップを開く</button>
+      <button class="gc-redraw-btn" id="redraw-btn" onclick="drawGacha(true)">引き直す</button>
+      <button class="gc-reset-btn" onclick="resetForm()">再設定する</button>
     </div>
   </div>
 </div>
 <script>
+  const ballColors=['#e84a4a','#4ae84a','#f0c030','#4ab8e8','#e87840','#a04ae8'];
   let counts={male:0,female:0};
   function change(type,delta){counts[type]=Math.max(0,counts[type]+delta);document.getElementById(type+'-val').textContent=counts[type]}
   function setTag(btn,val){document.querySelectorAll('.gc-tag').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('category').value=val}
+  function resetForm(){
+    document.getElementById('result-area').style.display='none';
+    document.getElementById('redraw-btn').style.display='block';
+    document.getElementById('form-area').style.display='block';
+  }
+  function startBallAnim(){
+    const ball=document.getElementById('ball-drop');
+    const color=ballColors[Math.floor(Math.random()*ballColors.length)];
+    ball.style.background=color;
+    ball.style.boxShadow='inset -4px -4px 8px rgba(0,0,0,0.2), inset 3px 3px 6px rgba(255,255,255,0.4)';
+    ball.classList.remove('go');
+    void ball.offsetWidth;
+    ball.classList.add('go');
+  }
   function drawGacha(isRedraw){
     document.getElementById('form-area').style.display='none';
     document.getElementById('result-area').style.display='none';
     document.getElementById('anim-area').style.display='block';
-    document.getElementById('anim-text').textContent=isRedraw?'運命に逆らうのですね…もう一度だけ。':'ｶﾞﾗｶﾞﾗｶﾞﾗ... 運命を紡いでいます...';
-    setTimeout(()=>{
-      document.getElementById('anim-area').style.display='none';
-      document.getElementById('r-name').textContent='〇〇カフェ 渋谷店';
-      document.getElementById('r-address').textContent='東京都渋谷区〇〇1-2-3';
-      document.getElementById('r-genre').textContent=document.getElementById('category').value;
-      const m=counts.male,f=counts.female;
-      document.getElementById('r-people').textContent=`男性${m}人・女性${f}人（計${m+f}人）`;
-      document.getElementById('r-reason').textContent='条件にぴったり合致し、今夜あなたが行くべき場所はここ以外にありません。';
-      document.getElementById('result-area').style.display='block';
-      if(isRedraw)document.getElementById('redraw-btn').style.display='none';
-    },2000);
+    document.getElementById('anim-text').textContent=isRedraw?'ｶﾞﾗｶﾞﾗｶﾞﾗ... もう一度お店を選定しています...':'ｶﾞﾗｶﾞﾗｶﾞﾗ... お店を選定しています...';
+    startBallAnim();
+    navigator.geolocation.getCurrentPosition(async function(position){
+      const lat=position.coords.latitude;
+      const lng=position.coords.longitude;
+      const distance=document.getElementById('distance').value;
+      const category=document.getElementById('category').value;
+      const freeword=document.getElementById('freeword').value;
+      try{
+        const response=await fetch('/api/gacha',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({lat,lng,distance,category,freeword})
+        });
+        const data=await response.json();
+        setTimeout(function(){
+          document.getElementById('anim-area').style.display='none';
+          if(response.ok){
+            document.getElementById('r-name').textContent=data.name;
+            document.getElementById('r-address').textContent=data.address;
+            document.getElementById('r-genre').textContent=category;
+            const m=counts.male,f=counts.female;
+            document.getElementById('r-people').textContent='男性'+m+'人・女性'+f+'人（計'+(m+f)+'人）';
+            document.getElementById('r-reason').textContent=data.reason;
+            document.getElementById('go-btn').onclick=function(){window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(data.name),'_blank')};
+            document.getElementById('result-area').style.display='block';
+            if(isRedraw)document.getElementById('redraw-btn').style.display='none';
+          }else{
+            alert(data.message);
+            resetForm();
+          }
+        },1500);
+      }catch(e){
+        alert('通信エラーが発生しました。');
+        resetForm();
+      }
+    },function(){
+      alert('位置情報の取得に失敗しました。');
+      resetForm();
+    });
   }
 </script>
 </body>
