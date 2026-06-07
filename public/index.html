@@ -34,17 +34,29 @@
     .gc-btn{width:100%;padding:16px;background:#c9a84c;border:none;border-radius:50px;color:#fff;font-family:'Dela Gothic One',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 0 #a07c28}
     .gc-btn:hover{background:#e0be6a}
     .gc-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #a07c28}
+    /* アニメーション */
     .gc-anim{display:none;text-align:center;padding:20px 20px 30px}
-    .gc-anim-machine{position:relative;width:140px;height:160px;margin:0 auto}
-    .gc-ball-drop{position:absolute;left:50%;transform:translateX(-50%);top:60px;width:28px;height:28px;border-radius:50%;opacity:0}
-    .gc-ball-drop.go{animation:ballDrop 1.2s ease-in forwards}
-    @keyframes ballDrop{
-      0%{top:50px;opacity:1;transform:translateX(-50%) scale(1)}
-      60%{top:115px;opacity:1;transform:translateX(-50%) scale(0.9)}
-      75%{top:105px;opacity:1;transform:translateX(-50%) scale(1.1)}
-      100%{top:118px;opacity:1;transform:translateX(-50%) scale(0.85)}
+    .gc-anim-wrap{position:relative;width:140px;height:200px;margin:0 auto}
+    .gc-ball-drop{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      width:28px;height:28px;
+      border-radius:50%;
+      top:108px;
+      opacity:0;
     }
-    .gc-anim-text{font-size:13px;color:#c9a84c;letter-spacing:2px;margin-top:12px}
+    .gc-ball-drop.go{animation:ballDrop 1.4s cubic-bezier(.25,.46,.45,.94) forwards}
+    @keyframes ballDrop{
+      0%{top:108px;opacity:0;transform:translateX(-50%) scale(0.5)}
+      15%{opacity:1;transform:translateX(-50%) scale(1)}
+      60%{top:155px;opacity:1;transform:translateX(-50%) scale(0.95)}
+      75%{top:148px;opacity:1;transform:translateX(-50%) scale(1.1)}
+      90%{top:158px;opacity:1;transform:translateX(-50%) scale(0.9)}
+      100%{top:155px;opacity:1;transform:translateX(-50%) scale(1)}
+    }
+    .gc-anim-text{font-size:13px;color:#c9a84c;letter-spacing:2px;margin-top:8px}
+    /* 結果 */
     .gc-result{display:none;padding:0 20px}
     .gc-destiny-label{text-align:center;font-size:11px;color:#c9a84c;letter-spacing:3px;margin:16px 0 10px;font-weight:700}
     .gc-result-card{background:#faf7f2;border:1.5px solid #c9a84c;border-radius:16px;padding:20px;margin-bottom:16px}
@@ -64,7 +76,9 @@
     <div class="gc-header">
       <p class="gc-title">ガチャンコ</p>
     </div>
-    <div class="gc-globe-area">
+
+    <!-- トップ・結果画面のガチャ静止画像 -->
+    <div class="gc-globe-area" id="globe-static">
       <svg width="140" height="160" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="30" y="112" width="80" height="44" rx="8" fill="#e8624a"/>
         <rect x="24" y="108" width="92" height="12" rx="6" fill="#e8624a"/>
@@ -81,6 +95,7 @@
         <rect x="54" y="110" width="32" height="6" rx="3" fill="#c9a84c"/>
       </svg>
     </div>
+
     <div class="gc-body" id="form-area">
       <div class="gc-section">
         <span class="gc-label">🚶 距離</span>
@@ -131,19 +146,22 @@
       <button class="gc-btn" onclick="drawGacha(false)">お店を探す</button>
     </div>
 
+    <!-- アニメーション（ガチャ1つ＋玉が落ちる） -->
     <div class="gc-anim" id="anim-area">
-      <div class="gc-anim-machine">
+      <div class="gc-anim-wrap">
         <svg width="140" height="160" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="30" y="112" width="80" height="44" rx="8" fill="#e8624a"/>
           <rect x="24" y="108" width="92" height="12" rx="6" fill="#e8624a"/>
           <rect x="46" y="128" width="48" height="20" rx="10" fill="#c94a34"/>
           <ellipse cx="70" cy="138" rx="18" ry="7" fill="#d4d4d4"/>
           <circle cx="70" cy="62" r="54" fill="#d6f0f8" stroke="#b0d8e8" stroke-width="2"/>
-          <circle cx="48" cy="72" r="13" fill="#4ab8e8"/>
-          <circle cx="70" cy="78" r="13" fill="#e84a4a"/>
-          <circle cx="92" cy="72" r="13" fill="#4ae84a"/>
-          <circle cx="70" cy="52" r="11" fill="#f0c030"/>
+          <circle cx="48" cy="72" r="13" fill="#4ab8e8"/><path d="M48 59 Q55 66 48 72" fill="#e84a4a"/><path d="M48 72 Q41 78 48 85" fill="#4ae84a"/>
+          <circle cx="70" cy="78" r="13" fill="#4ab8e8"/><path d="M70 65 Q77 72 70 78" fill="#f0c030"/><path d="M70 78 Q63 84 70 91" fill="#e84a4a"/>
+          <circle cx="92" cy="72" r="13" fill="#4ab8e8"/><path d="M92 59 Q99 66 92 72" fill="#4ae84a"/><path d="M92 72 Q85 78 92 85" fill="#2040e8"/>
+          <circle cx="56" cy="54" r="11" fill="#4ab8e8"/><path d="M56 43 Q63 49 56 54" fill="#e84a4a"/><path d="M56 54 Q49 60 56 65" fill="#f0c030"/>
+          <circle cx="84" cy="54" r="11" fill="#4ab8e8"/><path d="M84 43 Q91 49 84 54" fill="#2040e8"/><path d="M84 54 Q77 60 84 65" fill="#4ae84a"/>
           <ellipse cx="52" cy="30" rx="10" ry="6" fill="white" opacity="0.6"/>
+          <rect x="58" y="114" width="24" height="8" fill="#c9a84c"/>
           <rect x="54" y="110" width="32" height="6" rx="3" fill="#c9a84c"/>
         </svg>
         <div class="gc-ball-drop" id="ball-drop"></div>
@@ -174,6 +192,7 @@
   function resetForm(){
     document.getElementById('result-area').style.display='none';
     document.getElementById('redraw-btn').style.display='block';
+    document.getElementById('globe-static').style.display='flex';
     document.getElementById('form-area').style.display='block';
   }
   function startBallAnim(){
@@ -186,6 +205,7 @@
     ball.classList.add('go');
   }
   function drawGacha(isRedraw){
+    document.getElementById('globe-static').style.display='none';
     document.getElementById('form-area').style.display='none';
     document.getElementById('result-area').style.display='none';
     document.getElementById('anim-area').style.display='block';
@@ -214,6 +234,7 @@
             document.getElementById('r-people').textContent='男性'+m+'人・女性'+f+'人（計'+(m+f)+'人）';
             document.getElementById('r-reason').textContent=data.reason;
             document.getElementById('go-btn').onclick=function(){window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(data.name),'_blank')};
+            document.getElementById('globe-static').style.display='flex';
             document.getElementById('result-area').style.display='block';
             if(isRedraw)document.getElementById('redraw-btn').style.display='none';
           }else{

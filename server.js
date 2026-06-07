@@ -13,31 +13,24 @@ app.use(express.static('public'));
 app.post('/api/gacha', async (req, res) => {
     const { lat, lng, distance, category, freeword } = req.body;
     const apiKey = process.env.GOOGLE_API_KEY;
-    
-    // 距離の設定（デフォルト1000m）
-    const radius = distance || 1000; 
+    const radius = distance || 1000;
 
-    // 検索キーワードの構築（カテゴリー + フリーワード）
     let keyword = category;
-    if (freeword) {
-        keyword += ` ${freeword}`;
-    }
+    if (freeword) keyword += ` ${freeword}`;
 
     try {
-        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&keyword=${encodeURIComponent(keyword)}&language=ja&key=${apiKey}`;
-        
+        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&keyword=${encodeURIComponent(keyword)}&opennow=true&language=ja&key=${apiKey}`;
+
         const response = await axios.get(url);
         const places = response.data.results;
 
         if (places.length === 0) {
-            return res.status(404).json({ message: 'その条件では運命の場所が見つかりませんでした。条件を緩めてください。' });
+            return res.status(404).json({ message: '現在営業中のお店が見つかりませんでした。条件を緩めてください。' });
         }
 
-        // 1つだけ強制決定
         const randomIndex = Math.floor(Math.random() * places.length);
         const selectedPlace = places[randomIndex];
 
-        // 運命の理由をそれっぽく生成する
         const reasons = [
             `「${category}」を求めるあなたに、ここの雰囲気が今宵のベストアンサーだからです。`,
             `今のあなたの気分に最も同調している空間が、ここ以外に見当たらないからです。`,
@@ -46,11 +39,19 @@ app.post('/api/gacha', async (req, res) => {
         ];
         const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
 
+        // 写真URLの生成
+        let photoUrl = null;
+        if (selectedPlace.photos && selectedPlace.photos.length > 0) {
+            const photoRef = selectedPlace.photos[0].photo_reference;
+            photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoRef}&key=${apiKey}`;
+        }
+
         res.json({
             name: selectedPlace.name,
             address: selectedPlace.vicinity,
             rating: selectedPlace.rating || '評価なし',
-            reason: randomReason
+            reason: randomReason,
+            photoUrl: photoUrl
         });
 
     } catch (error) {
