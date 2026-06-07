@@ -10,6 +10,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+// 写真をプロキシして返すエンドポイント
+app.get('/api/photo', async (req, res) => {
+    const { ref } = req.query;
+    const apiKey = process.env.GOOGLE_API_KEY;
+    if (!ref) return res.status(400).send('No ref');
+    try {
+        const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${ref}&key=${apiKey}`;
+        const response = await axios.get(url, { responseType: 'stream' });
+        res.setHeader('Content-Type', response.headers['content-type']);
+        response.data.pipe(res);
+    } catch (e) {
+        res.status(500).send('Photo error');
+    }
+});
+
 app.post('/api/gacha', async (req, res) => {
     const { lat, lng, distance, category, freeword } = req.body;
     const apiKey = process.env.GOOGLE_API_KEY;
@@ -39,11 +54,10 @@ app.post('/api/gacha', async (req, res) => {
         ];
         const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
 
-        // 写真URLの生成
         let photoUrl = null;
         if (selectedPlace.photos && selectedPlace.photos.length > 0) {
             const photoRef = selectedPlace.photos[0].photo_reference;
-            photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoRef}&key=${apiKey}`;
+            photoUrl = `/api/photo?ref=${photoRef}`;
         }
 
         res.json({
