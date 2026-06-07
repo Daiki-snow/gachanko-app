@@ -1,296 +1,188 @@
-
-<head>
-    ...
-    <link rel="stylesheet" href="style.css">
-    ...
-</head>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GACHANKO - 運命決定ガチャ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            font-family: 'Noto Sans JP', sans-serif; 
-            /* 淡いピンクベージュのグラデーション背景 */
-            background: linear-gradient(135deg, #fdfbf7 0%, #faecec 100%); 
-            color: #5a4b46; 
-            text-align: center; 
-            padding: 20px; 
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .container { 
-            width: 100%;
-            max-width: 380px; 
-            margin: 0 auto; 
-        }
-        
-        /* タイトル周り */
-        h1 { 
-            font-family: 'Cinzel', serif; 
-            color: #b58d8d; 
-            font-size: 32px;
-            letter-spacing: 2px;
-            margin-bottom: 0px; 
-            font-weight: 600;
-        }
-        p.subtitle { 
-            font-size: 11px; 
-            color: #8c7b75; 
-            margin-top: 5px; 
-            margin-bottom: 25px;
-            letter-spacing: 1px;
-        }
-
-        /* グラスモーフィズム調のカード */
-        .card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            padding: 25px 20px;
-            box-shadow: 0 8px 32px rgba(181, 141, 141, 0.15);
-        }
-
-        .input-group { 
-            text-align: left; 
-            margin-bottom: 20px; 
-        }
-        label { 
-            display: block; 
-            font-size: 12px; 
-            margin-bottom: 8px; 
-            color: #7a6b65;
-            font-weight: 500;
-        }
-        
-        /* 入力フォームの装飾 */
-        select, input[type="text"] { 
-            width: 100%; 
-            padding: 12px; 
-            font-size: 14px; 
-            border-radius: 12px; 
-            border: 1px solid #e8d5d5; 
-            background: rgba(255, 255, 255, 0.9); 
-            color: #5a4b46; 
-            box-sizing: border-box; 
-            font-family: inherit;
-        }
-        select:focus, input[type="text"]:focus {
-            outline: none;
-            border-color: #c9a5a5;
-        }
-
-        /* ピル型のカテゴリーボタン */
-        .category-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .cat-btn {
-            background: transparent;
-            border: 1px solid #d4c1c1;
-            color: #8c7b75;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .cat-btn.active {
-            background: #c9a5a5;
-            border-color: #c9a5a5;
-            color: white;
-            font-weight: 500;
-        }
-
-        /* メインボタン */
-        .btn-main { 
-            background: linear-gradient(135deg, #d3a9a9 0%, #b88686 100%);
-            color: white; 
-            width: 100%; 
-            padding: 16px; 
-            margin-top: 15px; 
-            font-size: 16px; 
-            border-radius: 30px; 
-            border: none; 
-            font-weight: 700; 
-            letter-spacing: 1px;
-            cursor: pointer; 
-            box-shadow: 0 4px 15px rgba(184, 134, 134, 0.4);
-            transition: 0.3s; 
-        }
-        .btn-main:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(184, 134, 134, 0.6);
-        }
-
-        /* アニメーション・結果画面 */
-        #animation { display: none; margin: 40px 0; font-size: 16px; color: #b58d8d; letter-spacing: 2px; }
-        .spinner {
-            width: 50px; height: 50px; margin: 0 auto 20px auto;
-            border: 4px solid #f3ecec; border-top: 4px solid #c9a5a5;
-            border-radius: 50%; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        #result { display: none; }
-        #result h2 { font-size: 20px; color: #5a4b46; font-weight: normal; margin-bottom: 20px;}
-        
-        .result-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px 20px;
-            box-shadow: 0 10px 30px rgba(181, 141, 141, 0.1);
-            text-align: left;
-            margin-bottom: 20px;
-        }
-        .result-name { font-size: 22px; font-weight: bold; color: #4a3b32; margin-bottom: 15px; text-align: center;}
-        .result-item { font-size: 13px; margin-bottom: 8px; color: #7a6b65; display: flex; align-items: flex-start;}
-        .result-item-icon { width: 20px; margin-right: 5px; opacity: 0.7;}
-        
-        .reason-box { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e8d5d5; font-size: 13px; color: #8c7b75; line-height: 1.6;}
-
-        .btn-sub { 
-            background: transparent; 
-            color: #8c7b75; 
-            border: none;
-            font-size: 13px;
-            text-decoration: underline;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ガチャンコ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .gc-wrap{background:#f5f0e8;min-height:100vh;padding:24px 16px 40px;font-family:'Noto Sans JP',sans-serif;color:#2a2a2a}
+    .gc-machine{max-width:360px;margin:0 auto;background:#fff;border-radius:24px;border:3px solid #c9a84c;padding:0 0 24px;box-shadow:0 4px 0 #c9a84c,0 8px 24px #c9a84c33}
+    .gc-header{background:#c9a84c;border-radius:20px 20px 0 0;padding:16px 20px 12px;text-align:center}
+    .gc-title{font-family:'Dela Gothic One',sans-serif;font-size:28px;color:#fff;letter-spacing:4px;margin:0}
+    .gc-subtitle{font-size:10px;color:#ffffff99;letter-spacing:2px;margin-top:2px}
+    .gc-globe-area{display:flex;justify-content:center;padding:20px 0 8px}
+    .gc-body{padding:0 20px}
+    .gc-section{margin-bottom:16px}
+    .gc-label{font-size:11px;color:#c9a84c;letter-spacing:2px;margin-bottom:8px;display:block;font-weight:700}
+    .gc-select{width:100%;padding:10px 12px;background:#faf7f2;border:1.5px solid #c9a84c55;border-radius:10px;color:#2a2a2a;font-family:'Noto Sans JP',sans-serif;font-size:14px;box-sizing:border-box}
+    .gc-select:focus{outline:none;border-color:#c9a84c}
+    .gc-tags{display:flex;flex-wrap:wrap;gap:8px}
+    .gc-tag{background:transparent;border:1.5px solid #c9a84c66;color:#c9a84c;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
+    .gc-tag.on{background:#c9a84c;border-color:#c9a84c;color:#fff;font-weight:700}
+    .gc-input{width:100%;padding:10px 12px;background:#faf7f2;border:1.5px solid #c9a84c55;border-radius:10px;color:#2a2a2a;font-family:'Noto Sans JP',sans-serif;font-size:14px;box-sizing:border-box}
+    .gc-input::placeholder{color:#c9a84c66}
+    .gc-input:focus{outline:none;border-color:#c9a84c}
+    .gc-divider{border:none;border-top:1px dashed #c9a84c44;margin:16px 0}
+    .gc-people-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .gc-counter{background:#faf7f2;border:1.5px solid #c9a84c55;border-radius:12px;padding:10px 12px}
+    .gc-counter-label{font-size:11px;color:#888;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .gc-counter-ctrl{display:flex;align-items:center;justify-content:space-between}
+    .gc-cnt-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid #c9a84c;background:transparent;color:#c9a84c;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-family:'Noto Sans JP',sans-serif}
+    .gc-cnt-btn:hover{background:#c9a84c;color:#fff}
+    .gc-cnt-val{font-family:'Dela Gothic One',sans-serif;font-size:20px;color:#2a2a2a;min-width:24px;text-align:center}
+    .gc-cnt-unit{font-size:11px;color:#888;margin-left:2px}
+    .gc-btn{width:100%;padding:16px;background:#c9a84c;border:none;border-radius:50px;color:#fff;font-family:'Dela Gothic One',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 0 #a07c28}
+    .gc-btn:hover{background:#e0be6a}
+    .gc-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #a07c28}
+    .gc-btn-note{display:block;font-family:'Noto Sans JP',sans-serif;font-size:10px;font-weight:400;letter-spacing:0;margin-top:3px;opacity:.8}
+    .gc-coin{text-align:center;font-size:11px;color:#c9a84c88;letter-spacing:2px;margin-top:16px}
+    .gc-anim{display:none;text-align:center;padding:30px 20px}
+    .gc-spin{animation:spinY .5s linear infinite;display:inline-block;transform-origin:center}
+    @keyframes spinY{0%{transform:scaleX(1)}25%{transform:scaleX(.1)}50%{transform:scaleX(1)}75%{transform:scaleX(.1)}100%{transform:scaleX(1)}}
+    .gc-anim-text{font-size:13px;color:#c9a84c;letter-spacing:2px;margin-top:16px}
+    .gc-result{display:none;padding:0 20px}
+    .gc-destiny-label{text-align:center;font-size:11px;color:#c9a84c;letter-spacing:3px;margin:16px 0 10px;font-weight:700}
+    .gc-result-card{background:#faf7f2;border:1.5px solid #c9a84c;border-radius:16px;padding:20px;margin-bottom:16px}
+    .gc-result-name{font-family:'Dela Gothic One',sans-serif;font-size:20px;color:#2a2a2a;text-align:center;margin-bottom:16px;letter-spacing:1px}
+    .gc-result-row{font-size:12px;color:#888;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start}
+    .gc-result-row span{color:#2a2a2a}
+    .gc-reason{margin-top:14px;padding-top:12px;border-top:1px dashed #c9a84c44;font-size:12px;color:#888;line-height:1.7}
+    .gc-reason span{color:#2a2a2a}
+    .gc-go-btn{width:100%;padding:14px;background:#c9a84c;border:none;border-radius:50px;color:#fff;font-family:'Dela Gothic One',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;margin-bottom:12px;box-shadow:0 4px 0 #a07c28}
+    .gc-redraw-btn{width:100%;padding:10px;background:transparent;border:1.5px solid #c9a84c55;border-radius:50px;color:#c9a84c;font-family:'Noto Sans JP',sans-serif;font-size:12px;cursor:pointer}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>GACHANKO</h1>
-        <p class="subtitle">DESTINY ROULETTE<br>運命決定ガチャ</p>
-        
-        <div id="form-area" class="card">
-            <div class="input-group">
-                <label>🚶 距離</label>
-                <select id="distance">
-                    <option value="500">500m以内（すぐそこ）</option>
-                    <option value="1000" selected>1000m以内（徒歩圏内）</option>
-                    <option value="3000">3000m以内（タクシー推奨）</option>
-                </select>
-            </div>
-            
-            <div class="input-group">
-                <label>🍽️ カテゴリー</label>
-                <div class="category-tags">
-                    <button class="cat-btn active" onclick="setCategory(this, 'カフェ')">カフェ</button>
-                    <button class="cat-btn" onclick="setCategory(this, 'スイーツ')">スイーツ</button>
-                    <button class="cat-btn" onclick="setCategory(this, 'ランチ')">ランチ</button>
-                    <button class="cat-btn" onclick="setCategory(this, 'ディナー')">ディナー</button>
-                    <button class="cat-btn" onclick="setCategory(this, 'サク飲み')">サク飲み</button>
-                </div>
-                <input type="hidden" id="category" value="カフェ">
-            </div>
-
-            <div class="input-group">
-                <label>💭 気分・フリーワード</label>
-                <input type="text" id="freeword" placeholder="例：静か、おしゃれ、和食...">
-            </div>
-
-            <button class="btn-main" id="submit-btn" onclick="drawGacha(false)">これだっ！<br><span style="font-size: 11px; font-weight: normal;">(後戻りできません)</span></button>
-        </div>
-
-        <div id="animation">
-            <div class="spinner"></div>
-            <span id="anim-text">運命を紡いでいます...</span>
-        </div>
-
-        <div id="result">
-            <h2>あなたの運命は…</h2>
-            <div class="result-card">
-                <div class="result-name" id="r-name"></div>
-                <div class="result-item"><span class="result-item-icon">📍</span> <span id="r-address"></span></div>
-                <div class="result-item"><span class="result-item-icon">🏷️</span> ジャンル：<span id="r-genre"></span></div>
-                
-                <div class="reason-box">
-                    💡 運命の理由<br>
-                    <span id="r-reason"></span>
-                </div>
-            </div>
-            
-            <button class="btn-main" onclick="openMap()">今すぐ行け</button>
-            <button class="btn-sub" id="redraw-btn" onclick="drawGacha(true)">引き直す (Coward?)</button>
-        </div>
+<div class="gc-wrap">
+  <div class="gc-machine">
+    <div class="gc-header">
+      <p class="gc-title">ガチャンコ</p>
+      <p class="gc-subtitle">ALGORITHM REJECTED · DESTINY ROULETTE</p>
     </div>
-
-    <script>
-        // カテゴリーボタンの切り替え処理
-        function setCategory(btn, value) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('category').value = value;
-        }
-
-        let currentDestination = "";
-
-        async function drawGacha(isRedraw) {
-            const formArea = document.getElementById('form-area');
-            const resultDiv = document.getElementById('result');
-            const animDiv = document.getElementById('animation');
-            const animText = document.getElementById('anim-text');
-            
-            const distance = document.getElementById('distance').value;
-            const category = document.getElementById('category').value;
-            const freeword = document.getElementById('freeword').value;
-
-            formArea.style.display = 'none';
-            resultDiv.style.display = 'none';
-            animDiv.style.display = 'block';
-
-            if (isRedraw) {
-                animText.innerHTML = "運命に逆らうのですね…<br>もう一度だけ回しましょう。";
-            } else {
-                animText.innerHTML = "運命を紡いでいます...";
-            }
-
-            if (!navigator.geolocation) {
-                alert('位置情報に対応していません。');
-                location.reload();
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(async (position) => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-
-                try {
-                    const response = await fetch('/api/gacha', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ lat, lng, distance, category, freeword })
-                    });
-
-                    const data = await response.json();
-
-                    setTimeout(() => {
-                        animDiv.style.display = 'none';
-                        if (response.ok) {
-                            document.getElementById('r-name').innerText = data.name;
-                            document.getElementById('r-address').innerText = data.address;
-                            document.getElementById('r-genre').innerText = category;
-                            document.getElementById('r-reason').innerText = data.reason;
-                            
-                            // マップ検索用に店舗名を保存
-                            currentDestination = data.name;
-
-                            resultDiv.style.display = 'block';
-                            
-                            if(isRedraw) {
-                                document.getElementById('redraw-btn').style.display = 'none';
-                            }
-                        } else {
-                            alert(data.message
+    <div class="gc-globe-area">
+      <svg width="140" height="160" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="30" y="112" width="80" height="44" rx="8" fill="#e8624a"/>
+        <rect x="24" y="108" width="92" height="12" rx="6" fill="#e8624a"/>
+        <rect x="46" y="128" width="48" height="20" rx="10" fill="#c94a34"/>
+        <ellipse cx="70" cy="138" rx="18" ry="7" fill="#d4d4d4"/>
+        <circle cx="70" cy="62" r="54" fill="#d6f0f8" stroke="#b0d8e8" stroke-width="2"/>
+        <circle cx="48" cy="72" r="13" fill="#4ab8e8"/><path d="M48 59 Q55 66 48 72" fill="#e84a4a"/><path d="M48 72 Q41 78 48 85" fill="#4ae84a"/>
+        <circle cx="70" cy="78" r="13" fill="#4ab8e8"/><path d="M70 65 Q77 72 70 78" fill="#f0c030"/><path d="M70 78 Q63 84 70 91" fill="#e84a4a"/>
+        <circle cx="92" cy="72" r="13" fill="#4ab8e8"/><path d="M92 59 Q99 66 92 72" fill="#4ae84a"/><path d="M92 72 Q85 78 92 85" fill="#2040e8"/>
+        <circle cx="56" cy="54" r="11" fill="#4ab8e8"/><path d="M56 43 Q63 49 56 54" fill="#e84a4a"/><path d="M56 54 Q49 60 56 65" fill="#f0c030"/>
+        <circle cx="84" cy="54" r="11" fill="#4ab8e8"/><path d="M84 43 Q91 49 84 54" fill="#2040e8"/><path d="M84 54 Q77 60 84 65" fill="#4ae84a"/>
+        <ellipse cx="52" cy="30" rx="10" ry="6" fill="white" opacity="0.6"/>
+        <rect x="58" y="114" width="24" height="8" fill="#c9a84c"/>
+        <rect x="54" y="110" width="32" height="6" rx="3" fill="#c9a84c"/>
+      </svg>
+    </div>
+    <div class="gc-body" id="form-area">
+      <div class="gc-section">
+        <span class="gc-label">🚶 距離</span>
+        <select class="gc-select" id="distance">
+          <option value="500">500m以内（すぐそこ）</option>
+          <option value="1000" selected>1000m以内（徒歩圏内）</option>
+          <option value="3000">3000m以内（ちょい遠め）</option>
+        </select>
+      </div>
+      <div class="gc-section">
+        <span class="gc-label">👥 人数</span>
+        <div class="gc-people-row">
+          <div class="gc-counter">
+            <div class="gc-counter-label">👨 男性</div>
+            <div class="gc-counter-ctrl">
+              <button class="gc-cnt-btn" onclick="change('male',-1)">−</button>
+              <span><span class="gc-cnt-val" id="male-val">0</span><span class="gc-cnt-unit">人</span></span>
+              <button class="gc-cnt-btn" onclick="change('male',1)">＋</button>
+            </div>
+          </div>
+          <div class="gc-counter">
+            <div class="gc-counter-label">👩 女性</div>
+            <div class="gc-counter-ctrl">
+              <button class="gc-cnt-btn" onclick="change('female',-1)">−</button>
+              <span><span class="gc-cnt-val" id="female-val">0</span><span class="gc-cnt-unit">人</span></span>
+              <button class="gc-cnt-btn" onclick="change('female',1)">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gc-section">
+        <span class="gc-label">🍽️ カテゴリー</span>
+        <div class="gc-tags">
+          <button class="gc-tag on" onclick="setTag(this,'カフェ')">カフェ</button>
+          <button class="gc-tag" onclick="setTag(this,'スイーツ')">スイーツ</button>
+          <button class="gc-tag" onclick="setTag(this,'ランチ')">ランチ</button>
+          <button class="gc-tag" onclick="setTag(this,'ディナー')">ディナー</button>
+          <button class="gc-tag" onclick="setTag(this,'サク飲み')">サク飲み</button>
+          <button class="gc-tag" onclick="setTag(this,'ガッツリ')">ガッツリ</button>
+        </div>
+        <input type="hidden" id="category" value="カフェ">
+      </div>
+      <div class="gc-section">
+        <span class="gc-label">💭 気分・フリーワード</span>
+        <input class="gc-input" type="text" id="freeword" placeholder="例：静か、おしゃれ、和食...">
+      </div>
+      <hr class="gc-divider">
+      <button class="gc-btn" onclick="drawGacha(false)">
+        お店を探す
+        <span class="gc-btn-note">（後戻りできません）</span>
+      </button>
+      <p class="gc-coin">— INSERT COIN —</p>
+    </div>
+    <div class="gc-anim" id="anim-area">
+      <div class="gc-spin">
+        <svg width="80" height="90" viewBox="0 0 140 160">
+          <rect x="30" y="112" width="80" height="44" rx="8" fill="#e8624a"/>
+          <rect x="24" y="108" width="92" height="12" rx="6" fill="#e8624a"/>
+          <rect x="46" y="128" width="48" height="20" rx="10" fill="#c94a34"/>
+          <ellipse cx="70" cy="138" rx="18" ry="7" fill="#d4d4d4"/>
+          <circle cx="70" cy="62" r="54" fill="#d6f0f8" stroke="#b0d8e8" stroke-width="2"/>
+          <circle cx="48" cy="72" r="13" fill="#4ab8e8"/>
+          <circle cx="70" cy="78" r="13" fill="#e84a4a"/>
+          <circle cx="92" cy="72" r="13" fill="#4ae84a"/>
+          <circle cx="70" cy="52" r="11" fill="#f0c030"/>
+          <ellipse cx="52" cy="30" rx="10" ry="6" fill="white" opacity="0.6"/>
+          <rect x="54" y="110" width="32" height="6" rx="3" fill="#c9a84c"/>
+        </svg>
+      </div>
+      <p class="gc-anim-text" id="anim-text">ｶﾞﾗｶﾞﾗｶﾞﾗ... 運命を紡いでいます...</p>
+    </div>
+    <div class="gc-result" id="result-area">
+      <p class="gc-destiny-label">— YOUR DESTINY —</p>
+      <div class="gc-result-card">
+        <p class="gc-result-name" id="r-name"></p>
+        <div class="gc-result-row">📍 住所：<span id="r-address"></span></div>
+        <div class="gc-result-row">🏷️ ジャンル：<span id="r-genre"></span></div>
+        <div class="gc-result-row">👥 人数：<span id="r-people"></span></div>
+        <div class="gc-reason">💡 運命の理由<br><span id="r-reason"></span></div>
+      </div>
+      <button class="gc-go-btn">今すぐ行け</button>
+      <button class="gc-redraw-btn" id="redraw-btn" onclick="drawGacha(true)">引き直す（Coward?）</button>
+    </div>
+  </div>
+</div>
+<script>
+  let counts={male:0,female:0};
+  function change(type,delta){counts[type]=Math.max(0,counts[type]+delta);document.getElementById(type+'-val').textContent=counts[type]}
+  function setTag(btn,val){document.querySelectorAll('.gc-tag').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('category').value=val}
+  function drawGacha(isRedraw){
+    document.getElementById('form-area').style.display='none';
+    document.getElementById('result-area').style.display='none';
+    document.getElementById('anim-area').style.display='block';
+    document.getElementById('anim-text').textContent=isRedraw?'運命に逆らうのですね…もう一度だけ。':'ｶﾞﾗｶﾞﾗｶﾞﾗ... 運命を紡いでいます...';
+    setTimeout(()=>{
+      document.getElementById('anim-area').style.display='none';
+      document.getElementById('r-name').textContent='〇〇カフェ 渋谷店';
+      document.getElementById('r-address').textContent='東京都渋谷区〇〇1-2-3';
+      document.getElementById('r-genre').textContent=document.getElementById('category').value;
+      const m=counts.male,f=counts.female;
+      document.getElementById('r-people').textContent=`男性${m}人・女性${f}人（計${m+f}人）`;
+      document.getElementById('r-reason').textContent='条件にぴったり合致し、今夜あなたが行くべき場所はここ以外にありません。';
+      document.getElementById('result-area').style.display='block';
+      if(isRedraw)document.getElementById('redraw-btn').style.display='none';
+    },2000);
+  }
+</script>
+</body>
+</html>
